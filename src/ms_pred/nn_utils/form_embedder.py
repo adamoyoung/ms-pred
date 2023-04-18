@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 
-import forest.common as common
+import ms_pred.common as common
 
 
 class IntFeaturizer(nn.Module):

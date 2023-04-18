@@ -336,7 +336,7 @@ class MLPBlocks(nn.Module):
             output = self.dropout_layer(output)
             output = self.activation(output)
             if self.use_residuals:
-                output += old_op
+                output = output + old_op
                 old_op = output
 
         if self.output_layer is not None:
@@ -783,10 +783,10 @@ def random_walk_pe(g, k, eweight_name=None):
     RW = np.array(A / (A.sum(1) + 1e-30))  # 1-step transition probability
 
     # Iterate for k steps
-    PE = [dgl_F.astype(dgl_F.tensor(RW.diagonal()), torch.float32)]
+    PE = [dgl_F.astype(dgl_F.tensor(np.copy(RW.diagonal())), torch.float32)]
     RW_power = RW
     for _ in range(k - 1):
         RW_power = RW_power @ RW
-        PE.append(dgl_F.astype(dgl_F.tensor(RW_power.diagonal()), torch.float32))
+        PE.append(dgl_F.astype(dgl_F.tensor(np.copy(RW_power.diagonal())), torch.float32))
     PE = dgl_F.stack(PE, dim=-1)
     return PE
